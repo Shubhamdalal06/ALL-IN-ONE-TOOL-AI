@@ -1,0 +1,24 @@
+{
+  "name": "ai-all-in-one-tool",
+  "version": "1.0.0",
+  "description": "AI-powered data analysis and processing tool",
+  "scripts": {
+    "start:backend": "cd backend && python main.py",
+    "start:frontend": "cd frontend && python -m http.server 8001",
+    "install": "pip install -r backend/requirements.txt",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [
+    "data-analysis",
+    "excel",
+    "sql",
+    "six-sigma",
+    "ai",
+    "claude"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

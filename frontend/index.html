@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI All-in-One Data Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+        
+        .panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+        }
+        
+        input[type="file"],
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="file"]:hover,
+        input[type="text"]:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #667eea;
+        }
+        
+        input[type="file"]:focus,
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .results-content {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #495057;
+        }
+        
+        .status {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .data-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .data-info p {
+            margin: 5px 0;
+            color: #0c5460;
+        }
+        
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .module-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .module-btn {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .module-btn:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+        
+        .module-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AI All-in-One Data Tool</h1>
+            <p>Upload, analyze, and process your data with AI-powered insights</p>
+        </header>
+        
+        <main>
+            <!-- Upload Panel -->
+            <div class="panel">
+                <h2>📁 Upload Data</h2>
+                
+                <div class="form-group">
+                    <label for="fileInput">Select File (Excel, CSV, JSON)</label>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,.json" required>
+                </div>
+                
+                <button onclick="uploadFile()">
+                    <span id="uploadBtnText">Upload File</span>
+                </button>
+                
+                <div id="uploadStatus"></div>
+                
+                <div id="dataInfo"></div>
+                
+                <div class="results" id="uploadResults" style="display: none;">
+                    <h3>File Info</h3>
+                    <div class="results-content" id="uploadResultsContent"></div>
+                </div>
+            </div>
+            
+            <!-- Processing Panel -->
+            <div class="panel">
+                <h2>⚙️ Process Data</h2>
+                
+                <div class="form-group">
+                    <label>What do you want to do?</label>
+                    <textarea id="commandInput" placeholder="Example: Create a pivot table by Department, or Remove outliers, or Analyze Pareto chart"></textarea>
+                </div>
+                
+                <label>Or choose a module:</label>
+                <div class="module-selector">
+                    <button class="module-btn" onclick="setModule('excel')">📊 Excel</button>
+                    <button class="module-btn" onclick="setModule('sql')">🗄️ SQL</button>
+                    <button class="module-btn" onclick="setModule('sixsigma')">📈 Six Sigma</button>
+                    <button class="module-btn" onclick="setModule('cleaning')">🧹 Cleaning</button>
+                </div>
+                
+                <button onclick="processData()" style="margin-top: 20px;">
+                    <span id="processBtnText">Process Data</span>
+                </button>
+                
+                <div id="processStatus"></div>
+                
+                <div class="results" id="processResults" style="display: none;">
+                    <h3>Results</h3>
+                    <div class="results-content" id="processResultsContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentFileId = null;
+        let selectedModule = null;
+        
+        function setModule(module) {
+            selectedModule = module;
+            document.querySelectorAll('.module-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showStatus('uploadStatus', 'Please select a file', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            showStatus('uploadStatus', 'Uploading...', 'info');
+            document.getElementById('uploadBtnText').innerHTML = '<span class="spinner"></span> Uploading...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentFileId = data.file_id;
+                    showStatus('uploadStatus', `✓ File uploaded successfully!`, 'success');
+                    
+                    // Display file info
+                    const info = data.info;
+                    document.getElementById('dataInfo').innerHTML = `
+                        <div class="data-info">
+                            <p><strong>Rows:</strong> ${info.rows}</p>
+                            <p><strong>Columns:</strong> ${info.columns}</p>
+                            <p><strong>Columns:</strong> ${info.column_names.join(', ')}</p>
+                        </div>
+                    `;
+                    
+                    // Show results
+                    document.getElementById('uploadResultsContent').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('uploadResults').style.display = 'block';
+                } else {
+                    showStatus('uploadStatus', 'Upload failed', 'error');
+                }
+            } catch (error) {
+                showStatus('uploadStatus', `Error: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('uploadBtnText').textContent = 'Upload File';
+            }
+        }
+        
+        async function processData() {
+            if (!currentFileId) {
+                showStatus('processStatus', 'Please upload a file first', 'error');
+                return;
+            }
+            
+            const command = document.getElementById('commandInput').value;
+            
+            if (!command) {
+                showStatus('processStatus', 'Please enter a command or select a module', 'error');
+                return;
+            }
+            
+            showStatus('processStatus', 'Processing...', 'info');
+            document.getElementById('processBtnText').innerHTML = '<span class="spinner"></span> Processing...';
+            
+            const formData = new FormData();
+            formData.append('file_id', currentFileId);
+            formData.append('user_command', command);
+            if (selectedModule) {
+                formData.append('module_hint', selectedModule);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/process`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus('processStatus', '✓ Processing complete!', 'success');
+                    document.getElementById('processResultsContent').textContent = JSON.stringify(data, null, 2);
+                    document.getElementById('processResults').style.display = 'block';
+                } else {
+                    showStatus('processStatus', 'Processing failed', 'error');
+                }
+            } catch (error) {
+                showStatus('processStatus', `Error: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('processBtnText').textContent = 'Process Data';
+            }
+        }
+        
+        async function downloadFile() {
+            if (!currentFileId) {
+                showStatus('processStatus', 'Please process data first', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file_id', currentFileId);
+            formData.append('format', 'excel');
+            
+            try {
+                const response = await fetch(`${API_BASE}/download`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentFileId}_output.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (error) {
+                showStatus('processStatus', `Download error: ${error.message}`, 'error');
+            }
+        }
+        
+        function showStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
