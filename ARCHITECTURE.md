@@ -1,4 +1,3 @@
-# Architecture & Technical Details
 
 ## System Architecture
 
